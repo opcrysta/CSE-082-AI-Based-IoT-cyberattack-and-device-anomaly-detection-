@@ -1,0 +1,121 @@
+{
+  "model_path": "C:\\Users\\maury\\OneDrive\\Desktop\\HCL-Training\\CSE-082-AI-Based-IoT-cyberattack-and-device-anomaly-detection-\\models\\isolation_forest.joblib",
+  "features_evaluated": [
+    "temperature",
+    "voltage",
+    "cpu_usage",
+    "ram_usage",
+    "message_rate",
+    "failed_auth_count",
+    "network_latency"
+  ],
+  "contamination_rate": 0.05,
+  "benchmarks": {
+    "synthetic_scenarios": {
+      "dataset_name": "Synthetic Scenarios",
+      "total_records": 1200,
+      "normal_records": 800,
+      "anomaly_records": 400,
+      "confusion_matrix": {
+        "true_positives": 308,
+        "false_positives": 64,
+        "true_negatives": 736,
+        "false_negatives": 92
+      },
+      "metrics": {
+        "accuracy": 0.87,
+        "precision": 0.828,
+        "recall": 0.77,
+        "specificity": 0.92,
+        "false_positive_rate": 0.08,
+        "f1_score": 0.7979,
+        "roc_auc": 0.9364
+      },
+      "attack_breakdown": {
+        "brute_force_auth": {
+          "total_samples": 100,
+          "detected_samples": 100,
+          "detection_rate_pct": 100.0
+        },
+        "dos_flooding": {
+          "total_samples": 100,
+          "detected_samples": 100,
+          "detection_rate_pct": 100.0
+        },
+        "network_degradation": {
+          "total_samples": 100,
+          "detected_samples": 46,
+          "detection_rate_pct": 46.0
+        },
+        "normal": {
+          "total_samples": 800,
+          "detected_samples": 64,
+          "detection_rate_pct": 8.0
+        },
+        "sensor_tampering": {
+          "total_samples": 100,
+          "detected_samples": 62,
+          "detection_rate_pct": 62.0
+        }
+      }
+    },
+    "ton_iot_benchmark": {
+      "dataset_name": "UNSW TON_IoT Benchmark",
+      "total_records": 1811,
+      "normal_records": 1000,
+      "anomaly_records": 811,
+      "confusion_matrix": {
+        "true_positives": 605,
+        "false_positives": 0,
+        "true_negatives": 1000,
+        "false_negatives": 206
+      },
+      "metrics": {
+        "accuracy": 0.8863,
+        "precision": 1.0,
+        "recall": 0.746,
+        "specificity": 1.0,
+        "false_positive_rate": 0.0,
+        "f1_score": 0.8545,
+        "roc_auc": 0.8805
+      },
+      "attack_breakdown": {
+        "backdoor": {
+          "total_samples": 150,
+          "detected_samples": 150,
+          "detection_rate_pct": 100.0
+        },
+        "injection": {
+          "total_samples": 150,
+          "detected_samples": 0,
+          "detection_rate_pct": 0.0
+        },
+        "normal": {
+          "total_samples": 1000,
+          "detected_samples": 0,
+          "detection_rate_pct": 0.0
+        },
+        "password": {
+          "total_samples": 150,
+          "detected_samples": 150,
+          "detection_rate_pct": 100.0
+        },
+        "ransomware": {
+          "total_samples": 150,
+          "detected_samples": 150,
+          "detection_rate_pct": 100.0
+        },
+        "scanning": {
+          "total_samples": 61,
+          "detected_samples": 43,
+          "detection_rate_pct": 70.49
+        },
+        "xss": {
+          "total_samples": 150,
+          "detected_samples": 112,
+          "detection_rate_pct": 74.67
+        }
+      }
+    }
+  }
+}

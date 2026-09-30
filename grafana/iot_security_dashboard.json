@@ -1,0 +1,492 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 2,
+  "id": null,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "id": 99,
+      "options": {
+        "content": "<div style=\"display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; width: 100%;\"><div style=\"display: flex; align-items: center; gap: 10px;\"><span style=\"font-size: 22px;\">&#128737;</span><div><strong style=\"font-size: 15px; color: #FFFFFF; font-weight: 600;\">AI-Based IoT Cyberattack & Anomaly Detection System</strong><span style=\"display: block; font-size: 11px; color: #9AA0A6;\">Unsupervised Isolation Forest Engine &bull; MQTT Real-Time Stream &bull; 2-Tier Threat Attribution</span></div></div><div style=\"display: flex; gap: 10px; font-size: 11px; font-weight: 500;\"><span style=\"background: rgba(115,191,105,0.12); color: #73BF69; padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(115,191,105,0.3);\">&#9679; Status: Live Ingestion</span><span style=\"background: rgba(87,148,242,0.12); color: #5794F2; padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(87,148,242,0.3);\">&#9679; Mosquitto 1883</span><span style=\"background: rgba(163,82,204,0.12); color: #A352CC; padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(163,82,204,0.3);\">&#9679; InfluxDB v2 (TSM)</span><span style=\"background: rgba(255,153,0,0.12); color: #FF9900; padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(255,153,0,0.3);\">&#9679; UNSW TON_IoT Validated</span></div></div>",
+        "mode": "html"
+      },
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 2 },
+      "id": 100,
+      "title": "System Security Overview",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#73BF69", "value": null },
+              { "color": "#FADE2A", "value": 0.35 },
+              { "color": "#F2495C", "value": 0.70 }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 3 },
+      "id": 1,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+          "query": "from(bucket: \"iot_telemetry\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"device_telemetry\")\n  |> filter(fn: (r) => r[\"_field\"] == \"calibrated_risk_score\")\n  |> filter(fn: (r) => if \"${device}\" == \"All\" then r[\"device_id\"] =~ /^device_00[1-3]$/ else r[\"device_id\"] == \"${device}\")\n  |> last()\n  |> group()\n  |> max()\n  |> yield(name: \"current_risk\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Current Anomaly Risk Level",
+      "type": "gauge"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "#5794F2" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "#5794F2", "value": null }]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 3 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "value"
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+          "query": "from(bucket: \"iot_telemetry\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"device_telemetry\")\n  |> filter(fn: (r) => r[\"_field\"] == \"temperature\")\n  |> filter(fn: (r) => if \"${device}\" == \"All\" then r[\"device_id\"] =~ /^device_00[1-3]$/ else r[\"device_id\"] == \"${device}\")\n  |> group()\n  |> count()\n  |> yield(name: \"packet_count\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Telemetry Observations",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#73BF69", "value": null },
+              { "color": "#FF9900", "value": 1 },
+              { "color": "#F2495C", "value": 25 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 3 },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "value"
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+          "query": "from(bucket: \"iot_telemetry\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"device_telemetry\")\n  |> filter(fn: (r) => r[\"_field\"] == \"is_anomaly\")\n  |> filter(fn: (r) => if \"${device}\" == \"All\" then r[\"device_id\"] =~ /^device_00[1-3]$/ else r[\"device_id\"] == \"${device}\")\n  |> group()\n  |> sum()\n  |> yield(name: \"anomaly_count\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Anomalies Flagged (ML)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#73BF69", "value": null },
+              { "color": "#FF780A", "value": 1 },
+              { "color": "#E02F44", "value": 10 }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 3 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "value"
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+          "query": "from(bucket: \"iot_telemetry\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"security_alerts\")\n  |> filter(fn: (r) => r[\"_field\"] == \"calibrated_risk_score\")\n  |> filter(fn: (r) => if \"${device}\" == \"All\" then r[\"device_id\"] =~ /^device_00[1-3]$/ else r[\"device_id\"] == \"${device}\")\n  |> group()\n  |> count()\n  |> yield(name: \"alert_count\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Actionable Cyber Incidents",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+      "id": 101,
+      "title": "Live Sensor & Hardware Telemetry",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 6,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byRegexp", "options": ".*temperature.*" },
+            "properties": [
+              { "id": "unit", "value": "celsius" },
+              { "id": "custom.axisPlacement", "value": "left" },
+              { "id": "custom.axisLabel", "value": "Temperature (°C)" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "#FF9900" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byRegexp", "options": ".*voltage.*" },
+            "properties": [
+              { "id": "unit", "value": "volt" },
+              { "id": "custom.axisPlacement", "value": "right" },
+              { "id": "custom.axisLabel", "value": "Voltage (V)" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "#5794F2" } }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 9 },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+          "query": "from(bucket: \"iot_telemetry\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"device_telemetry\")\n  |> filter(fn: (r) => r[\"_field\"] == \"temperature\" or r[\"_field\"] == \"voltage\")\n  |> filter(fn: (r) => if \"${device}\" == \"All\" then r[\"device_id\"] =~ /^device_00[1-3]$/ else r[\"device_id\"] == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"phys_metrics\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Physical Sensors: Temperature & Voltage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byRegexp", "options": ".*cpu_usage.*" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "custom.axisPlacement", "value": "left" },
+              { "id": "custom.axisLabel", "value": "CPU Load (%)" },
+              { "id": "custom.fillOpacity", "value": 10 },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "#A352CC" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byRegexp", "options": ".*message_rate.*" },
+            "properties": [
+              { "id": "unit", "value": "reqps" },
+              { "id": "custom.axisPlacement", "value": "right" },
+              { "id": "custom.axisLabel", "value": "Publish Rate (msg/s)" },
+              { "id": "custom.lineStyle", "value": { "fill": "dash", "dash": [6, 4] } },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "#E02F44" } }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 9 },
+      "id": 6,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+          "query": "from(bucket: \"iot_telemetry\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"device_telemetry\")\n  |> filter(fn: (r) => r[\"_field\"] == \"message_rate\" or r[\"_field\"] == \"cpu_usage\")\n  |> filter(fn: (r) => if \"${device}\" == \"All\" then r[\"device_id\"] =~ /^device_00[1-3]$/ else r[\"device_id\"] == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"load_metrics\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Network & Compute Saturation (DoS Floods)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 },
+      "id": 102,
+      "title": "Security Intelligence & Incident Log",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "bars",
+            "lineWidth": 1
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byRegexp", "options": ".*failed_auth_count.*" },
+            "properties": [
+              { "id": "unit", "value": "short" },
+              { "id": "custom.axisPlacement", "value": "left" },
+              { "id": "custom.axisLabel", "value": "Failed Auth Count" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "#FF4560" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byRegexp", "options": ".*network_latency.*" },
+            "properties": [
+              { "id": "unit", "value": "ms" },
+              { "id": "custom.axisPlacement", "value": "right" },
+              { "id": "custom.axisLabel", "value": "Latency (ms)" },
+              { "id": "custom.drawStyle", "value": "line" },
+              { "id": "custom.lineInterpolation", "value": "smooth" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "#00E396" } }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 9, "w": 10, "x": 0, "y": 19 },
+      "id": 7,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+          "query": "from(bucket: \"iot_telemetry\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"device_telemetry\")\n  |> filter(fn: (r) => r[\"_field\"] == \"failed_auth_count\" or r[\"_field\"] == \"network_latency\")\n  |> filter(fn: (r) => if \"${device}\" == \"All\" then r[\"device_id\"] =~ /^device_00[1-3]$/ else r[\"device_id\"] == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\n  |> yield(name: \"auth_latency\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Auth Failures (Brute-Force) & Latency",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "text", "value": null }]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Severity" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              {
+                "id": "mappings",
+                "value": [
+                  { "options": { "CRITICAL": { "color": "#E02F44", "index": 0 } }, "type": "value" },
+                  { "options": { "HIGH": { "color": "#FF780A", "index": 1 } }, "type": "value" },
+                  { "options": { "MEDIUM": { "color": "#EAB839", "index": 2 } }, "type": "value" },
+                  { "options": { "LOW": { "color": "#5794F2", "index": 3 } }, "type": "value" }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Risk Score" },
+            "properties": [
+              { "id": "unit", "value": "percentunit" },
+              { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "#73BF69", "value": null },
+                    { "color": "#EAB839", "value": 0.35 },
+                    { "color": "#E02F44", "value": 0.70 }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 9, "w": 14, "x": 10, "y": 19 },
+      "id": 8,
+      "options": {
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "Timestamp" }]
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "InfluxDB_IoT" },
+          "query": "from(bucket: \"iot_telemetry\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"security_alerts\")\n  |> filter(fn: (r) => if \"${device}\" == \"All\" then r[\"device_id\"] =~ /^device_00[1-3]$/ else r[\"device_id\"] == \"${device}\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\"])\n  |> pivot(rowKey:[\"_time\", \"device_id\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> group()\n  |> sort(columns: [\"_time\"], desc: true)\n  |> limit(n: 15)",
+          "refId": "A"
+        }
+      ],
+      "title": "Recent Security Incident Feed",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "alert_category": true,
+              "is_cyberattack": true,
+              "raw_anomaly_score": true,
+              "result": true,
+              "table": true
+            },
+            "indexByName": {
+              "_time": 0,
+              "device_id": 1,
+              "threat_name": 2,
+              "severity": 3,
+              "calibrated_risk_score": 4,
+              "recommended_action": 5
+            },
+            "renameByName": {
+              "_time": "Timestamp",
+              "calibrated_risk_score": "Risk Score",
+              "device_id": "Target Device",
+              "recommended_action": "Recommended Mitigation Guidance",
+              "severity": "Severity",
+              "threat_name": "Attributed Threat"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": ["iot", "cybersecurity", "anomaly-detection", "isolation-forest"],
+  "templating": {
+    "list": [
+      {
+        "allValue": "All",
+        "current": {
+          "selected": true,
+          "text": "All Devices (Fleet)",
+          "value": "All"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Focus Device",
+        "multi": false,
+        "name": "device",
+        "options": [
+          { "selected": true, "text": "All Devices (Fleet)", "value": "All" },
+          { "selected": false, "text": "device_001", "value": "device_001" },
+          { "selected": false, "text": "device_002", "value": "device_002" },
+          { "selected": false, "text": "device_003", "value": "device_003" }
+        ],
+        "query": "All,device_001,device_002,device_003",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": { "from": "now-5m", "to": "now" },
+  "timepicker": {
+    "refresh_intervals": ["2s", "5s", "10s", "30s"]
+  },
+  "timezone": "browser",
+  "title": "IoT Cyberattack & Anomaly Detection Dashboard",
+  "uid": "iot-security-overview",
+  "version": 5
+}

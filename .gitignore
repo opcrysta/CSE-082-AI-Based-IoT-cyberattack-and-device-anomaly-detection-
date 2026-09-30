@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Environment Variables & Secrets
+.env
+*.local
+
+# Trained ML Models (Keep binaries out of git)
+models/*.joblib
+*.joblib
+
+# Data files (keep raw generated data local)
+data/normal/*.csv
+data/attack_scenarios/*.csv
+data/cache/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Antigravity & IDE
+.vscode/
+.idea/
+
+# Docker volumes / runtime storage
+docker/mosquitto/data/
+docker/mosquitto/log/
+docker/influxdb/

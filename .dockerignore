@@ -1,0 +1,22 @@
+# Git
+.git
+.gitignore
+
+# Python virtual environment & cache
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs and scratch
+*.log
+scratch/
+.system_generated/
+.gemini/
+
+# Offline test cache (temporary)
+data/cache/*.db

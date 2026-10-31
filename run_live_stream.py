@@ -35,12 +35,25 @@ def start_live_pipeline():
     collector_thread.start()
     time.sleep(1.0)
 
-    # Publisher client
+    # Publisher client with connection retry
     pub_client = mqtt.Client(
         callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
         client_id="live_pipeline_streamer"
     )
-    pub_client.connect(mqtt_config.broker_host, mqtt_config.broker_port, keepalive=60)
+    pub_connected = False
+    for attempt in range(1, 16):
+        try:
+            pub_client.connect(mqtt_config.broker_host, mqtt_config.broker_port, keepalive=60)
+            pub_connected = True
+            break
+        except Exception:
+            print(f"[*] Waiting for MQTT broker at {mqtt_config.broker_host}:{mqtt_config.broker_port} (attempt {attempt}/15)...")
+            time.sleep(2.0)
+
+    if not pub_connected:
+        print(f"[ERROR] Failed to connect to MQTT broker after 15 attempts.")
+        sys.exit(1)
+
     pub_client.loop_start()
 
     simulator = MultiDeviceSimulator(num_devices=3, random_state=42)

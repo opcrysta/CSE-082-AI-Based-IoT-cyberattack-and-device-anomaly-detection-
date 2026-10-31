@@ -7,6 +7,8 @@ services:
       - "1883:1883"
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
 
   influxdb:
     image: influxdb:2.7
@@ -21,6 +23,8 @@ services:
       - DOCKER_INFLUXDB_INIT_ORG=iot_security_org
       - DOCKER_INFLUXDB_INIT_BUCKET=iot_telemetry
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-iot-token-12345
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
 
   grafana:
     image: grafana/grafana:10.4.0
@@ -34,5 +38,33 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana_data:/var/lib/grafana
     depends_on:
       - influxdb
+
+  iot_pipeline:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: iot_pipeline
+    restart: unless-stopped
+    environment:
+      - MQTT_BROKER_HOST=mosquitto
+      - MQTT_BROKER_PORT=1883
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_TOKEN=my-super-secret-iot-token-12345
+      - INFLUXDB_ORG=iot_security_org
+      - INFLUXDB_BUCKET=iot_telemetry
+      - MODEL_PATH=models/isolation_forest.joblib
+    volumes:
+      - collector_cache:/app/data/cache
+    depends_on:
+      - mosquitto
+      - influxdb
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:
+  influxdb_data:
+  grafana_data:
+  collector_cache:

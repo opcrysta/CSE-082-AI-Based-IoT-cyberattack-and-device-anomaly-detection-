@@ -6,8 +6,8 @@ echo ======================================================================
 echo.
 
 REM 1. Ensure Docker containers are running
-echo [*] Starting InfluxDB and Grafana containers...
-docker compose -f docker/docker-compose.yml up -d
+echo [*] Starting InfluxDB, Mosquitto and Grafana containers...
+docker compose up -d mosquitto influxdb grafana
 
 echo.
 echo [*] Dashboard URL: http://localhost:3000/d/iot-security-overview

@@ -123,15 +123,26 @@ class MQTTCollectorService:
                 print(f"[COLLECTOR ERROR] Custom callback failure: {e}")
 
     def start(self):
-        """Starts the collector event loop."""
+        """Starts the collector event loop with resilient broker connection retry."""
+        print(f"[COLLECTOR] Initializing pipeline with Isolation Forest & InfluxDB...")
+        connected = False
+        for attempt in range(1, 16):
+            try:
+                self.client.connect(mqtt_config.broker_host, mqtt_config.broker_port, keepalive=mqtt_config.keep_alive)
+                connected = True
+                break
+            except Exception as e:
+                print(f"[COLLECTOR] Waiting for Mosquitto at {mqtt_config.broker_host}:{mqtt_config.broker_port} (attempt {attempt}/15)...")
+                time.sleep(2.0)
+
+        if not connected:
+            print(f"[COLLECTOR ERROR] Could not connect to Mosquitto at {mqtt_config.broker_host}:{mqtt_config.broker_port}.")
+            return
+
         try:
-            print(f"[COLLECTOR] Initializing pipeline with Isolation Forest & InfluxDB...")
-            self.client.connect(mqtt_config.broker_host, mqtt_config.broker_port, keepalive=mqtt_config.keep_alive)
             self.client.loop_forever()
         except KeyboardInterrupt:
             print("\n[COLLECTOR] Stopping service...")
-        except ConnectionRefusedError:
-            print(f"[COLLECTOR ERROR] Could not connect to Mosquitto at {mqtt_config.broker_host}:{mqtt_config.broker_port}.")
         finally:
             self.stop()
 

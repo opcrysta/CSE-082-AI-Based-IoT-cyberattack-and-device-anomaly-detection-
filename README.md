@@ -197,6 +197,33 @@ CSE-082-AI-Based-IoT-cyberattack-and-device-anomaly-detection-/
 
 ---
 
+## Production Deployment (Enterprise Multi-Container Stack)
+
+The entire system is containerized as an enterprise 4-service production stack:
+- **`iot_mosquitto`**: Eclipse Mosquitto MQTT Broker (port `1883`)
+- **`iot_influxdb`**: InfluxDB v2 Time-Series Engine (port `8086`) with persistent volume
+- **`iot_grafana`**: Grafana SOC Dashboard with automated data source & dashboard provisioning (port `3000`)
+- **`iot_pipeline`**: Containerized Python 3.11 ML Anomaly Detection & Live Telemetry Streamer
+
+### 1-Click Deployment
+
+- **Windows:** Double-click or execute:
+  ```powershell
+  .\deploy.bat
+  ```
+- **Linux / macOS / Cloud VPS:**
+  ```bash
+  chmod +x deploy.sh && ./deploy.sh
+  ```
+- **Standard Docker Compose:**
+  ```bash
+  docker compose up -d --build
+  ```
+
+For full VPS cloud deployment details (AWS EC2, DigitalOcean, Azure), reverse proxies, physical microcontroller setup (ESP32 / Raspberry Pi), and volume management, refer to the [Production Deployment Guide](docs/DEPLOYMENT.md).
+
+---
+
 ## Quickstart & Viva Demonstration Guide
 
 ### 1. Run Complete Automated Test Suite (33 Tests)

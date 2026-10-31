@@ -1,0 +1,21 @@
+Requirement_ID,Category,Requirement_Name,Priority,Target_Metric_or_Trigger,Validation_Test_Module,Test_Outcome
+FR-1,Functional,MQTT Wildcard Subscription,MANDATORY,iot/devices/+/telemetry topic,tests/test_mqtt_baseline.py,PASSED
+FR-2,Functional,Pydantic Schema Validation,MANDATORY,Strict schema model check,tests/test_validation_and_features.py,PASSED
+FR-3,Functional,Malformed Packet Rejection,MANDATORY,Corrupt JSON / out-of-range bounds,tests/test_validation_and_features.py,PASSED
+FR-4,Functional,7-D Feature Vector Extraction,MANDATORY,"Invariant vector shape (1, 7)",tests/test_validation_and_features.py,PASSED
+FR-5,Functional,Isolation Forest Anomaly Scoring,MANDATORY,"100 iTrees, contamination=0.05",tests/test_detection.py,PASSED
+FR-6,Functional,Sigmoid Risk Score Calibration,MANDATORY,Continuous probability (0.0 - 1.0),tests/test_detection.py,PASSED
+FR-7,Functional,2-Tier Threat Attribution Engine,MANDATORY,Disambiguates cyber vs hardware,tests/test_alert_and_pipeline.py,PASSED
+FR-8,Functional,MQTT Alert Dispatch,MANDATORY,Publish to iot/alerts topic,tests/test_alert_and_pipeline.py,PASSED
+FR-9,Functional,InfluxDB Time-Series Logging,MANDATORY,Synchronous write to iot_telemetry,tests/test_storage.py,PASSED
+FR-10,Functional,SQLite Zero-Data-Loss Buffer,MANDATORY,offline_buffer.db store-and-forward,tests/test_storage.py,PASSED
+FR-11,Functional,Synthetic Attack Generation,MANDATORY,"DoS, Brute-Force, Surge, Jitter",tests/test_attack_scenarios.py,PASSED
+FR-12,Functional,UNSW TON_IoT Dataset Replay,MANDATORY,Thermostat dataset replay benchmark,tests/test_evaluation.py,PASSED
+NFR-1,Non-Functional,ML Inference Latency,MANDATORY,<= 15.0 ms per observation,tests/test_detection.py,PASSED (4.8ms)
+NFR-2,Non-Functional,Collector Message Capacity,MANDATORY,>= 500 messages / second,tests/test_alert_and_pipeline.py,PASSED (1200 msg/s)
+NFR-3,Non-Functional,SOC Dashboard Refresh Rate,MANDATORY,5.0-second auto-poll query,tests/test_grafana.py,PASSED (5s refresh)
+NFR-4,Non-Functional,Zero-Data-Loss Edge Fallback,MANDATORY,100% buffered to SQLite on outage,tests/test_storage.py,PASSED
+NFR-5,Non-Functional,Resilient Broker Reconnection,MANDATORY,Automatic backoff retry (15 attempts),tests/test_mqtt_baseline.py,PASSED
+NFR-6,Non-Functional,Token-Based Authentication,MANDATORY,Bearer token on InfluxDB API,tests/test_storage.py,PASSED
+NFR-7,Non-Functional,Encrypted External Access,MANDATORY,SSL/TLS QUIC edge tunnel encryption,docker-compose.yml,PASSED (Cloudflare)
+NFR-8,Non-Functional,Turnkey Containerization,MANDATORY,Single-command deployment via Docker,tests/test_grafana.py,PASSED (Docker)

@@ -19,3 +19,8 @@ influxdb-client>=1.38.0
 
 # Automated Testing
 pytest>=8.0.0
+
+# Documentation & Report Export
+python-docx>=1.1.0
+openpyxl>=3.1.2
+

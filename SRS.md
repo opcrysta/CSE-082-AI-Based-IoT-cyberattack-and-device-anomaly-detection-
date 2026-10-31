@@ -22,6 +22,9 @@
 | **Target Infrastructure** | Multi-Container Microservices Architecture (Docker, Linux/Windows) |
 | **Core Algorithms** | Unsupervised Isolation Forest, Sigmoid Risk Calibration, 2-Tier Threat Attribution |
 | **Storage & UI Engine** | InfluxDB v2 (TSM Engine, Flux) & Grafana SOC Operations Center |
+| **Live Deployed URL** | **https://adaptor-raw-america-walk.trycloudflare.com/d/iot-security-overview** |
+| **Access Authorization** | Public SSL/TLS Edge Tunnel (Anonymous Viewer Enabled — No Credentials Required) |
+| **Automated Test Matrix**| 33 / 33 Passing Pytest Unit & Pipeline Integration Tests (100% Green) |
 
 ---
 

@@ -19,6 +19,9 @@
 | **Target Infrastructure** | Multi-Container Microservices Architecture (Docker, Linux/Windows) |
 | **Core Algorithms** | Unsupervised Isolation Forest, Sigmoid Risk Calibration, 2-Tier Threat Attribution |
 | **Storage & UI Engine** | InfluxDB v2 (TSM Engine, Flux) & Grafana SOC Operations Center |
+| **Live Deployed URL** | **https://adaptor-raw-america-walk.trycloudflare.com/d/iot-security-overview** |
+| **Access Authorization** | Public SSL/TLS Edge Tunnel (Anonymous Viewer Enabled — No Credentials Required) |
+| **Automated Test Matrix**| 33 / 33 Passing Pytest Unit & Pipeline Integration Tests (100% Green) |
 
 ---
 
@@ -180,7 +183,11 @@ The system is fully containerized and runs on any platform supporting Docker:
 ## 3. External Interface Requirements
 
 ### 3.1 User Interfaces (SOC Dashboard)
-The primary interface is the Grafana Security Operations Center (SOC) Executive Dashboard (`grafana/iot_security_dashboard.json`), accessible via Web Browser.
+The primary interface is the Grafana Security Operations Center (SOC) Executive Dashboard (`grafana/iot_security_dashboard.json`), accessible live via Web Browser:
+- **Live Production URL (Global Access):** [https://adaptor-raw-america-walk.trycloudflare.com/d/iot-security-overview](https://adaptor-raw-america-walk.trycloudflare.com/d/iot-security-overview)
+- **Local Deployment URL:** `http://localhost:3000/d/iot-security-overview`
+- **Access Authorization:** Anonymous Viewer Mode is enabled (`GF_AUTH_ANONYMOUS_ENABLED=true`) allowing immediate evaluation without login credentials. Full administrative controls are accessible via `admin` / `admin`.
+- **Refresh Frequency:** Continuous 5-second asynchronous polling (`refresh: 5s`).
 
 | Dashboard Panel | Panel Type | Data Source & Flux Query | Operational Purpose |
 | :--- | :--- | :--- | :--- |

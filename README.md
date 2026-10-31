@@ -252,3 +252,5 @@ This single turnkey script:
 - **Grafana Security Overview:** [http://localhost:3000/d/iot-security-overview](http://localhost:3000/d/iot-security-overview) (Login: `admin` / `admin`)
 - **InfluxDB Time-Series Explorer:** [http://localhost:8086](http://localhost:8086) (Org: `iot_security_org`, Bucket: `iot_telemetry`)
 - **Viva Questions & Answers:** [docs/viva_questions.md](docs/viva_questions.md) (10 comprehensive engineering questions).
+- **Software Requirements Specification (SRS):** [docs/SRS.md](docs/SRS.md) / [SRS.md](SRS.md) (IEEE Std 830-1998 compliant).
+- **Production Deployment Guide:** [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
